@@ -1,0 +1,42 @@
+---
+- name: Ensure Ghost Blog Directories Exist
+  file:
+    path: "{{docker_dir}}/ghost"
+    state: directory
+    owner: "{{ main_username }}"
+    group: "{{ main_username }}"
+
+- name: Generate Ghost Blog Stack
+  include_role:
+    name: _docker_compose_generator
+  vars:
+    compose_dest: "{{docker_dir}}/ghost/"
+    networks:
+      - name: web
+        external: true
+    containers:
+      - service_name: ghost
+        container_name: ghost
+        active: true
+        image: ghost:4-alpine
+        restart: always
+        networks:
+          - web
+        # ports:
+        #   - 8080:2368
+        volumes:
+          - "{{ docker_dir }}/ghost/content/:/var/lib/ghost/content"
+        environment:
+          - "url=https://blog.{{ primary_domain }}"
+          - "mail__transport=SMTP"
+          - "mail__from={{ sftp_from }}"
+          - "mail__options__service=SMTP"
+          - "mail__options__host={{ sftp_host }}"
+          - "mail__options__port=587"
+          - "mail__options__auth__user={{ sftp_username }}"
+          - "mail__options__auth__pass={{ sftp_password }}"
+        labels:
+          - "traefik.enable=true" # <== Enable traefik to proxy this container
+          - "traefik.http.routers.blog-web-secured.rule=Host(`blog.{{ primary_domain }}`)"
+          - "traefik.http.routers.blog-web-secured.entrypoints=web-secured"
+          - "traefik.http.routers.blog-web-secured.tls.certresolver=mytlschallenge"

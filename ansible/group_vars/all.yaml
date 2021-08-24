@@ -1,0 +1,10 @@
+docker_dir: "/home/{{ main_username }}/docker"
+ansible_python_interpreter: /usr/bin/python3
+
+# ansible_become: yes
+ansible_become_method: sudo
+main_username: hayden
+main_user: "1000"
+main_group: "1000"
+
+time_zone: America/Anchorage

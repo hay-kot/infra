@@ -1,0 +1,9 @@
+proxy:
+  pihole:
+    proper_name: Pihole
+    host: "Digital Ocean Server"
+    subdomain: pihole-nuc
+    restricted: true
+    local_address: "http://{{ vm_ubnt_secondary_docker_ip }}"
+    port: 8012
+

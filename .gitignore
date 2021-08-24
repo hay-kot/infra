@@ -1,0 +1,9 @@
+*.retry
+.idea
+.env
+.vault_pass.txt
+.vault-password
+auto_docs/dist
+.venv
+.pytest*
+.DS_store

@@ -1,0 +1,22 @@
+- name: apply local configuration to servers listed in hosts
+  hosts: remote
+  user: "{{ main_username }}"
+  vars_files:
+    - "vars/vault.yaml"
+  vars:
+    - traefik_dynamic: "roles/docker_traefik/files/dynamic.linode.yaml"
+    - public_domain: hay-kot.dev
+    - primary_domain: hay-kot.dev
+  roles:
+    # - common
+    # - docker
+    # - security
+    # - gitea_stack
+    - docker_traefik
+    - docker_plausible
+    - docker_mealie_next
+    - docker_mealie_demo
+    - docker_ghost
+    - docker_netdata
+    - docker_gotify
+    - docker_diun

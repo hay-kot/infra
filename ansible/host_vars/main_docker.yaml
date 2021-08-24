@@ -1,0 +1,272 @@
+app_tags:
+  gitea: "1"
+  grafana: latest-ubuntu
+  mealie: dev
+proxy:
+  # apache_guacamole:
+  #   proper_name: Apache Guacamole
+  #   host: "{{ vm_ubnt_docker_ip}}"
+  #   local_address: "http://{{ old_vm_ubnt_docker_ip }}"
+  #   port: 8002
+  #   subdomain: guac
+
+  bitwarden_rs:
+    proper_name: Bitwarden Server
+    host: "{{ vm_ubnt_docker_ip }}"
+    local_address: bitwarden
+    port: 80
+    restricted: true #! Restricted
+    subdomain: pass
+
+  blueiris:
+    proper_name: Blue Iris NVR
+    host: "{{vm_w10_nvr_ip}}"
+    local_address: "http://{{vm_w10_nvr_ip}}"
+    port: 8081
+    subdomain: cams
+
+  code_server:
+    proper_name: VS Code Server
+    host: "{{vm_ubnt_docker_ip}}"
+    local_address: "code-server"
+    restricted: true
+    port: 8443
+    subdomain: code
+
+  drone:
+    proper_name: Drone.io CI/CD
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: drone
+    port: 80
+    restricted: true #! Restricted
+    subdomain: drone
+
+  emby:
+    proper_name: Emby Media Server
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: emby
+    port: 8096
+    restricted: true #! Restricted
+    subdomain: emby
+
+  gitea:
+    proper_name: Gitea
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: gitea
+    port: 3000
+    restricted: true #! Restricted
+    subdomain: gitea
+
+  gitea_ssh:
+    proper_name: Gitea SSH
+    local_address: gitea
+    host: "{{ vm_ubnt_docker_ip}}"
+    port: 2223
+    restricted: true #! Restricted
+    subdomain: gitea-ssh
+
+  glances:
+    proper_name: Glances - Main Docker
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: "{{ vm_ubnt_docker_ip }}"
+    port: 61208
+    restricted: true #! Restricted
+    subdomain: glances
+
+  glances-nuc:
+    proper_name: Glances - NUC Docker
+    host: "{{ vm_ubnt_secondary_docker_ip }}"
+    local_address: "{{ vm_ubnt_secondary_docker_ip }}"
+    port: 61208
+    restricted: true #! Restricted
+    subdomain: glances-nuc
+
+  glances-nvr:
+    proper_name: Glances - Windows
+    host: "{{ vm_w10_nvr_ip }}"
+    local_address: "{{ vm_w10_nvr_ip }}"
+    port: 61208
+    restricted: true #! Restricted
+    subdomain: glances-nvr
+
+  grafana:
+    proper_name: Grafana
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: grafana
+    port: 3000
+    restricted: true #! Restricted
+    subdomain: grafana
+
+  gotify:
+    proper_name: Gotify
+    host: "{{ vm_ubnt_docker_ip }}"
+    local_address: gotify
+    port: 80
+    restricted: true #! Restricted
+    subdomain: gotify
+
+  homeassistant:
+    proper_name: Home Assistant
+    host: "{{ homeassistant_ip }}"
+    local_address: "https://{{ homeassistant_ip }}"
+    port: 8123
+    self_signed: true
+    subdomain: home
+
+  jackett:
+    proper_name: Jackett
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: "http://{{ vm_ubnt_docker_ip }}"
+    port: 9117
+    restricted: true #! Restricted
+    subdomain: jackett
+
+  jellyfin:
+    proper_name: jellyfin
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: jellyfin
+    port: 8096
+    restricted: true #! Restricted
+    subdomain: jellyfin
+
+  matrix:
+    proper_name: Matrix Chat Server
+    host: 10.10.10.97
+    self_signed: true
+    local_address: "https://10.10.10.97"
+    port: 443
+    restricted: true
+    subdomain: matrix
+
+  element:
+    proper_name: Element Chat
+    host: 10.10.10.97
+    self_signed: true10.1
+    local_address: "https://10.10.10.97"
+    port: 443
+    restricted: true
+    subdomain: element
+
+  mealie:
+    proper_name: Mealie
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: mealie
+    port: 80
+    restricted: true #! Restricted
+    subdomain: mealie
+
+  node_red:
+    proper_name: Node-Red
+    host: "{{ homeassistant_ip }}"
+    local_address: "http://{{ homeassistant_ip }}"
+    port: 1880
+    restricted: true #! Restricted
+    subdomain: nodered
+
+  nzbget:
+    proper_name: NZBGet
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: "http://{{ vm_ubnt_docker_ip }}"
+    port: 6789
+    restricted: true #! Restricted
+    subdomain: nzb
+
+  pihole:
+    proper_name: Pihole - Main
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: "http://{{ vm_ubnt_docker_ip }}"
+    port: 8012
+    restricted: true #! Restricted
+    subdomain: pihole
+
+  pihole_nuc:
+    proper_name: Pihole - NUC
+    host: "{{vm_ubnt_secondary_docker_ip}}"
+    local_address: "http://{{vm_ubnt_secondary_docker_ip}}"
+    port: 8012
+    restricted: true #! Restricted
+    subdomain: pihole-nuc
+
+  portainer:
+    proper_name: Portinaer - Main
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: portainer
+    port: 9000
+    restricted: true #! Restricted
+    subdomain: portainer
+
+  prox-nuc:
+    proper_name: Proxmox - NUC
+    host: "{{ proxomox_nuc_ip }}"
+    local_address: "https://{{ proxomox_nuc_ip }}"
+    port: 8006
+    restricted: true #! Restricted
+    self_signed: true
+    subdomain: prox-nuc
+
+  proxmoc:
+    proper_name: Proxmox - Main
+    host: "{{ proxomox_main_ip }}"
+    local_address: "https://{{ proxomox_main_ip }}"
+    port: 8006
+    restricted: true #! Restricted
+    self_signed: true
+    subdomain: proxmox
+
+  qbittorrent:
+    proper_name: qbittorrent
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: "http://{{ vm_ubnt_docker_ip }}"
+    port: 8080
+    restricted: true #! Restricted
+    self_signed: false
+    subdomain: qbt
+
+  radarr:
+    proper_name: Radarr
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: "http://{{ vm_ubnt_docker_ip }}"
+    port: 7878
+    restricted: true #! Restricted
+    subdomain: radarr
+
+  sonarr:
+    proper_name: Sonarr
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: "http://{{ vm_ubnt_docker_ip }}"
+    port: 8989
+    restricted: true #! Restricted
+    subdomain: sonarr
+
+  synology:
+    proper_name: Synology NAS
+    host: "{{ nas_ip }}"
+    local_address: "http://{{ nas_ip }}"
+    port: 5000
+    restricted: true #! Restricted
+    subdomain: nas
+
+  transmission:
+    proper_name: Transmission
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: "http://{{ vm_ubnt_docker_ip }}"
+    port: 9091
+    restricted: true #! Restricted
+    subdomain: trz
+
+  unifi:
+    proper_name: Unifi Router
+    host: "{{ router_ip }}"
+    local_address: "https://{{ router_ip }}"
+    port: 443
+    restricted: true #! Restricted
+    self_signed: true
+    subdomain: unifi
+
+  wiki:
+    proper_name: mkdocs Wiki
+    host: "{{ vm_ubnt_docker_ip}}"
+    local_address: mkdocs_wiki
+    port: 80
+    restricted: true #! Restricted
+    subdomain: wiki

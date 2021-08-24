@@ -1,0 +1,42 @@
+# Hardware IP
+primary_domain: '{{ home_domain }}'
+router_ip: 10.10.10.1
+nas_ip: 10.10.10.4
+
+# Proxmox Hosts
+proxomox_main_ip: 10.10.10.85
+proxomox_nuc_ip: 10.10.10.82
+
+# Virtual Machines
+old_vm_ubnt_docker_ip: 10.10.10.92
+vm_ubnt_docker_ip: 10.10.10.168
+vm_ubnt_secondary_docker_ip: 10.10.10.95
+homeassistant_ip: 10.10.10.93
+vm_w10_nvr_ip: 10.10.10.149
+
+# Service IPs
+influx_db_host: "{{ vm_ubnt_docker_ip }}"
+
+main_user: "1000"
+main_group: "1000"
+
+
+# Network Mount Drive Paths
+nas_media: //10.10.10.4/NAS_Media
+nas_backups: //10.10.10.4/NAS_Backups
+nas_docs: //10.10.10.4/NAS_Docs
+nas_hyper_backups: //10.10.10.4/HyperBackups
+
+nas_media_local: /media/NAS_Media
+nas_backups_local: /media/NAS_Backups
+nas_docs_local: /media/NAS_Docs
+
+# peer to peer
+downloads_dir: /media/NAS_Media/downloads
+torrent_download_dir: /media/NAS_Media/downloads/torrents
+nzb_download_dir: /media/NAS_Media/downloads/nzb
+
+# Gitea
+gitea_database: gitea
+gitea_pg_un: gitea
+

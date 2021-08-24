@@ -1,0 +1,6 @@
+primary_domain: hay-kot.dev
+
+docker:
+  networks:
+    - name: web
+      external: true

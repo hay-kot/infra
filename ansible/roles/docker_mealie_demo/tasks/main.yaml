@@ -1,0 +1,47 @@
+---
+- name: Ensure Mealie Demo Directories Exist
+  file:
+    path: "{{docker_dir}}/mealie-demo"
+    state: directory
+    owner: "{{ main_username }}"
+    group: "{{ main_username }}"
+
+- name: Generate Mealie Demo Stack
+  include_role:
+    name: _docker_compose_generator
+  vars:
+    compose_dest: "{{docker_dir}}/mealie-demo/"
+    networks:
+      - name: web
+        external: true
+    containers:
+      - service_name: mealie-demo
+        container_name: mealie-demo
+        active: true
+        image: hkotel/mealie:latest
+        restart: always
+        networks:
+          - web
+        environment:
+          - TZ=America/Anchorage
+          # Default Recipe Settings
+          - RECIPE_PUBLIC=true
+          - RECIPE_SHOW_NUTRITION=true
+          - RECIPE_SHOW_ASSETS=true
+          - RECIPE_LANDSCAPE_VIEW=true
+          - RECIPE_DISABLE_COMMENTS=false
+          - RECIPE_DISABLE_AMOUNT=false
+          - IS_DEMO=true
+          - BASE_URL=https://mealie-demo.{{ primary_domain }}
+          # Gunicorn
+          - WEB_CONCURRENCY=2
+          - WORKERS_PER_CORE=0.5
+          - MAX_WORKERS=1
+        volumes:
+          - ./data/:/app/data
+        labels:
+          - "traefik.enable=true" # <== Enable traefik to proxy this container
+          - "traefik.http.routers.web.middlewares=redirect@file" # <== This is a middleware to redirect to https
+          - "traefik.http.routers.mealie-web-secured.rule=Host(`mealie-demo.{{ primary_domain }}`)" # <== Your Domain Name for the https rule
+          - "traefik.http.routers.mealie-web-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+          - "traefik.http.routers.mealie-web-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https

@@ -1,0 +1,38 @@
+---
+- name: Ensure Diun Directories Exist
+  file:
+    path: "{{docker_dir}}/diun"
+    state: directory
+    owner: "{{ main_username }}"
+    group: "{{ main_username }}"
+
+- name: Generate Diun Stack
+  include_role:
+    name: _docker_compose_generator
+  vars:
+    compose_dest: "{{docker_dir}}/diun/"
+    containers:
+      - service_name: diun
+        container_name: diun
+        active: true
+        image: crazymax/diun:latest
+        command: serve
+        networks:
+          - web
+        volumes:
+          - "./data:/data"
+          - "/var/run/docker.sock:/var/run/docker.sock"
+        environment:
+          - "{{ time_zone }}"
+          - "LOG_LEVEL=info"
+          - "LOG_JSON=false"
+          - "DIUN_WATCH_WORKERS=20"
+          - "DIUN_WATCH_SCHEDULE=0 */6 * * *"
+          - "DIUN_PROVIDERS_DOCKER=true"
+          - "DIUN_NOTIF_GOTIFY_ENDPOINT=https://gotify.{{ primary_domain }}"
+          - "DIUN_NOTIF_GOTIFY_TOKEN={{ gotify_tokens.diun }}"
+          - "DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true"
+        labels:
+          - "diun.enable=true"
+          - "diun.watch_repo=true"
+        restart: always

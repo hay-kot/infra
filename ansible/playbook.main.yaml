@@ -1,0 +1,19 @@
+- name: apply local configuration to servers listed in hosts
+  hosts: main_docker
+  user: "{{ main_username }}"
+  vars_files:
+    - "vars/vault.yaml"
+  roles:
+    # - common
+    # - docker
+    # - portainer
+    # - pihole
+    # - pihole_sync
+    # - peer_to_peer_stack
+    # - emby
+    # - bitwarden_rs
+    # - glances_container
+    # # # # - home_assistant - WIP
+    # - documentation
+    - mealie
+    # - caddy

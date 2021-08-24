@@ -1,0 +1,92 @@
+---
+- name: Ensure Plausible Directories Exist
+  file:
+    path: "{{docker_dir}}/plausible"
+    state: directory
+    owner: "{{ main_username }}"
+    group: "{{ main_username }}"
+
+- name: Copy Dynamic File
+  template:
+    src: "../templates/plausible-conf.env.j2"
+    dest: "{{ docker_dir }}/plausible/plausible-conf.env"
+    owner: "{{ main_username }}"
+    group: "{{ main_username }}"
+
+- name: Generate Plausible Stack
+  include_role:
+    name: _docker_compose_generator
+  vars:
+    compose_dest: "{{docker_dir}}/plausible/"
+
+    networks:
+      - name: web
+        external: true
+      - name: plausible_backend
+        external: false
+
+    volumes:
+      - name: db-data
+        driver: local
+      - name: event-data
+        driver: local
+      - name: geoip
+        driver: local
+
+    containers:
+      - service_name: mail
+        container_name: mail
+        active: true
+        image: bytemark/smtp
+        restart: always
+
+      - service_name: plausible_db
+        container_name: plausible_db
+        active: true
+        image: postgres:12
+        volumes:
+          - db-data:/var/lib/postgresql/data
+        environment:
+          - POSTGRES_PASSWORD=postgres
+        networks:
+          - plausible_backend
+          
+      - service_name: plausible_events_db
+        container_name: plausible_events_db
+        active: true
+        restart: always
+        image: yandex/clickhouse-server:21.3.2.5
+        volumes:
+          - event-data:/var/lib/clickhouse
+          - ./clickhouse/clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
+          - ./clickhouse/clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
+        ulimits:
+          nofile:
+            soft: 262144
+            hard: 262144
+        networks:
+          - plausible_backend
+
+      - service_name: plausible
+        container_name: plausible
+        active: true
+        restart: always
+        image: plausible/analytics:latest
+        command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh db init-admin && /entrypoint.sh run"
+        depends_on:
+          - plausible_db
+          - plausible_events_db
+          - mail
+        # ports:
+        #   - 8000:8000
+        env_file:
+          - plausible-conf.env
+        networks:
+          - web
+          - plausible_backend
+        labels:
+          - "traefik.enable=true" # <== Enable traefik to proxy this container
+          - "traefik.http.routers.plausible-web-secured.rule=Host(`analytics.{{ primary_domain }}`)" # <== Your Domain Name for the https rule
+          - "traefik.http.routers.plausible-web-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+          - "traefik.http.routers.plausible-web-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+

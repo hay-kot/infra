@@ -1,0 +1,36 @@
+http:
+  routers:
+    # Define a connection between requests and services
+    to-portfolio:
+      rule: "Host(`hay-kot.dev`)"
+      service: portfolio
+      tls:
+        certResolver: "mytlschallenge"
+        passthrough: true
+    to-next-docs:
+      rule: "(Host(`mealie.hay-kot.dev`) && PathPrefix(`/nightly{regex:$$|/.*}`))"
+      service: next-docs
+      middlewares:
+        - "nightly-stripprefix"
+      tls:
+        certResolver: "mytlschallenge"
+        passthrough: true
+
+  middlewares:
+    redirect:
+      redirectScheme:
+        scheme: https
+    nightly-stripprefix:
+      stripPrefix:
+        prefixes:
+          - "/nightly"
+
+  services:
+    portfolio:
+      loadBalancer:
+        servers:
+          - url: "https://awesome-sinoussi-2af10c.netlify.app"   
+    next-docs: 
+      loadBalancer:
+        servers:
+          - url: "https://mealie-nightly-docs.netlify.app"   

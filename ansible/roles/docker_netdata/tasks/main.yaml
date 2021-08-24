@@ -1,0 +1,52 @@
+---
+- name: Ensure Netdata Agent Directories Exist
+  file:
+    path: "{{docker_dir}}/netdata-agent"
+    state: directory
+    owner: "{{ main_username }}"
+    group: "{{ main_username }}"
+
+- name: Generate Netdata Agent Stack
+  include_role:
+    name: _docker_compose_generator
+  vars:
+    compose_dest: "{{docker_dir}}/netdata-agent/"
+
+    volumes:
+      - name: netdataconfig
+        driver: local
+      - name: netdatalib
+        driver: local
+      - name: netdatacache
+        driver: local
+
+    networks:
+      - name: web
+        external: true
+    containers:
+      - service_name: netdata-agent
+        container_name: netdata-agent
+        active: true
+        image: netdata/netdata
+        hostname: stats.{{ primary_domain }} # set to fqdn of host
+        # ports:
+        #   - 19999:19999
+        restart: unless-stopped
+        cap_add:
+          - SYS_PTRACE
+        security_opt:
+          - apparmor:unconfined
+        volumes:
+          - netdataconfig:/etc/netdata
+          - netdatalib:/var/lib/netdata
+          - netdatacache:/var/cache/netdata
+          - /etc/passwd:/host/etc/passwd:ro
+          - /etc/group:/host/etc/group:ro
+          - /proc:/host/proc:ro
+          - /sys:/host/sys:ro
+          - /etc/os-release:/host/etc/os-release:ro
+        labels:
+          - "traefik.enable=true" # <== Enable traefik to proxy this container
+          - "traefik.http.routers.net-data-secured.rule=Host(`stats.{{ primary_domain }}`)"
+          - "traefik.http.routers.net-data-secured.entrypoints=web-secured"
+          - "traefik.http.routers.net-data-secured.tls.certresolver=mytlschallenge"

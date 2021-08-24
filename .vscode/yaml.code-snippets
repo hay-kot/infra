@@ -1,0 +1,36 @@
+{
+  // Place your infra workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  "Docker-Compose Generator Snippet": {
+    "prefix": "container",
+    "body": [
+      "---",
+      "- name: Ensure ${1:Name Proper} Directories Exist",
+      "  file:",
+      "    path: \"{{docker_dir}}/${2:Name Lower}\"",
+      "    state: directory",
+      "    owner: \"{{ main_username }}\"",
+      "    group: \"{{ main_username }}\"",
+      "",
+      "- name: Generate ${1:Name Proper} Stack",
+      "  include_role:",
+      "    name: _docker_compose_generator",
+      "  vars:",
+      "    compose_dest: \"{{docker_dir}}/${2:Name Lower}/\"",
+      "    networks:",
+      "      - name: web",
+      "        external: true",
+      "    containers:",
+      "      - service_name: ${2:Name Lower}",
+      "        container_name: ${2:Name Lower}",
+      "        active: true",
+      "        DOCKER_STUFF",
+    ],
+    "description": "Docker-Compose Generator Snippet"
+  }
+}

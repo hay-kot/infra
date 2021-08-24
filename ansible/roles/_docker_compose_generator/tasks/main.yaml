@@ -1,0 +1,20 @@
+---
+- name: Ensure Destination Exists
+  file:
+    path: "{{ docker_compose_generator_output_path }}"
+    state: directory
+
+- name: Writing `docker-compose.yaml` to Destination
+  template:
+    src: ../templates/docker-compose.yml.j2
+    dest: "{{ compose_dest }}/docker-compose.yaml"
+    owner: "{{ main_user }}"
+    group: "{{ main_group }}"
+  register: docker_composed
+
+- name: Create and/or Start Containers
+  when: docker_composed.changed
+  community.docker.docker_compose:
+    restarted: true
+    project_src: "{{ compose_dest }}"
+  register: output

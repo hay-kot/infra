@@ -1,0 +1,12 @@
+- name: apply local configuration to servers listed in hosts
+  hosts: secondary_docker
+  user: "{{ main_username }}"
+  vars_files:
+    - "vars/vault.yaml"
+  roles:
+    - common
+    - docker
+    - portainer_agent
+    - pihole
+    - pihole_sync_user
+    - glances_container

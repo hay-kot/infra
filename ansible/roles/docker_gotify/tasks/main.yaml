@@ -1,0 +1,42 @@
+---
+- name: Ensure Gotify Directories Exist
+  file:
+    path: "{{docker_dir}}/gotify"
+    state: directory
+    owner: "{{ main_username }}"
+    group: "{{ main_username }}"
+
+- name: Generate Gotify Stack
+  include_role:
+    name: _docker_compose_generator
+  vars:
+    compose_dest: "{{docker_dir}}/gotify/"
+    networks:
+      - name: web
+        external: true
+    containers:
+      - service_name: gotify
+        container_name: gotify
+        active: true
+        image: gotify/server
+        restart_policy: always
+        networks:
+          - web
+        # ports:
+        #   - 8080:80
+        volumes:
+          - "{{ docker_dir }}/gotify:/app/data"
+        environment:
+          - "GOTIFY_DEFAULTUSER_PASS=DefaultPassword"
+        labels:
+          - "traefik.enable=true" # <== Enable traefik to proxy this container
+          - "traefik.http.routers.web.middlewares=redirect@file" # <== This is a middleware to redirect to https
+          - "traefik.http.routers.gotify-web-secured.rule=Host(`gotify.{{ primary_domain }}`)" # <== Your Domain Name for the https rule
+          - "traefik.http.routers.gotify-web-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+          - "traefik.http.routers.gotify-web-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+
+- name: Create and Start Gotify
+  community.docker.docker_compose:
+    restarted: true
+    project_src: "{{docker_dir}}/gotify"
+  register: output
