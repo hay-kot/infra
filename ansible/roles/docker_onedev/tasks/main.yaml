@@ -1,0 +1,35 @@
+---
+- name: Ensure Onedev Directories Exist
+  file:
+    path: "{{docker_dir}}/onedev"
+    state: directory
+    owner: "{{ main_username }}"
+    group: "{{ main_username }}"
+
+- name: Generate OneDev Stack
+  include_role:
+    name: _docker_compose_generator
+  vars:
+    compose_dest: "{{docker_dir}}/onedev/"
+    networks:
+      - name: web
+        external: true
+    containers:
+      - service_name: onedev
+        active: true
+        restart_policy: always
+        networks:
+          - web
+        volumes:
+          - "/var/run/docker.sock:/var/run/docker.sock"
+          - "{{docker_dir}}/onedev/data:/opt/onedev"
+        ports:
+          - "6610:6610"
+          - "6611:6611"
+        image: 1dev/server
+
+- name: Create and Start OneDev
+  community.docker.docker_compose:
+    restarted: true
+    project_src: "{{docker_dir}}/onedev"
+  register: output
