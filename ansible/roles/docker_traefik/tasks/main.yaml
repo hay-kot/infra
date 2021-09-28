@@ -25,19 +25,19 @@
       - service_name: traefik
         container_name: traefik
         active: true
-        image: traefik:v2.0
+        image: traefik:v2.5
         restart: always
         ports:
-          - "80:80" # <== http
-          - "443:443" # <== https
+          - "80:80"
+          - "443:443"
         command:
           #### These are the CLI commands that will configure Traefik and tell it how to work! ####
           ## API Settings - https://docs.traefik.io/operations/api/, endpoints - https://docs.traefik.io/operations/api/#endpoints ##
-          - --api.insecure=true # <== Enabling insecure api, NOT RECOMMENDED FOR PRODUCTION
-          - --api.dashboard=true # <== Enabling the dashboard to view services, middlewares, routers, etc...
+          - --api.insecure=false # <== Enabling insecure api, NOT RECOMMENDED FOR PRODUCTION
+          - --api.dashboard=false # <== Enabling the dashboard to view services, middlewares, routers, etc...
           - --api.debug=false # <== Enabling additional endpoints for debugging and profiling
           ## Log Settings (options: ERROR, DEBUG, PANIC, FATAL, WARN, INFO) - https://docs.traefik.io/observability/logs/ ##
-          - --log.level=DEBUG # <== Setting the level of the logs from traefik
+          - --log.level=ERROR # <== Setting the level of the logs from traefik
           ## Provider Settings - https://docs.traefik.io/providers/docker/#provider-configuration ##
           - --providers.docker=true # <== Enabling docker as the provider for traefik
           - --providers.docker.exposedbydefault=false # <== Don't expose every container to traefik, only expose enabled ones
@@ -46,6 +46,8 @@
           - --providers.docker.network=web # <== Operate on the docker network named web
           ## Entrypoints Settings - https://docs.traefik.io/routing/entrypoints/#configuration ##
           - --entrypoints.web.address=:80 # <== Defining an entrypoint for port :80 named web
+          - --entrypoints.web.http.redirections.entryPoint.to=web-secured
+          - --entrypoints.web.http.redirections.entryPoint.scheme=https
           - --entrypoints.web-secured.address=:443 # <== Defining an entrypoint for https on port :443 named web-secured
           ## Certificate Settings (Let's Encrypt) -  https://docs.traefik.io/https/acme/#configuration-examples ##
           - --certificatesresolvers.mytlschallenge.acme.tlschallenge=true # <== Enable TLS-ALPN-01 to generate and renew ACME certs
@@ -57,11 +59,3 @@
           - ./dynamic.yaml:/dynamic.yaml # <== Volume for dynamic conf file, **ref: line 27
         networks:
           - web # <== Placing traefik on the network named web, to access containers on this network
-        # labels:
-        ### Labels define the behavior and rules of the traefik proxy for this container ####
-        # - "traefik.enable=true" # <== Enable traefik on itself to view dashboard and assign subdomain to view it
-        # - "traefik.port=8080"
-        # - "traefik.http.routers.traefik-web-secured.rule=Host(`monitor.hay-kot.dev`)" # <== Setting the domain for the dashboard
-        # - "traefik.http.routers.traefik-web-secured.entrypoints=web-secured"
-        # - "traefik.http.routers.traefik-web-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
-        # - "traefik.http.routers.traefik-web-secured.service=api@internal" # <== Enabling the api to be a service to access

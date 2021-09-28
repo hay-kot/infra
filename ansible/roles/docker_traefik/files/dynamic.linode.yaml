@@ -6,7 +6,7 @@ http:
       service: portfolio
       tls:
         certResolver: "mytlschallenge"
-        passthrough: true
+
     to-next-docs:
       rule: "(Host(`mealie.hay-kot.dev`) && PathPrefix(`/nightly{regex:$$|/.*}`))"
       service: next-docs
@@ -14,23 +14,23 @@ http:
         - "nightly-stripprefix"
       tls:
         certResolver: "mytlschallenge"
-        passthrough: true
 
   middlewares:
-    redirect:
-      redirectScheme:
-        scheme: https
     nightly-stripprefix:
       stripPrefix:
         prefixes:
           - "/nightly"
+    mealie-io-redirect:
+      redirectRegex:
+        regex: "https://mealie-demo.hay-kot.dev(.*)"
+        replacement: "https://demo.mealie.io${1}"
 
   services:
     portfolio:
       loadBalancer:
         servers:
-          - url: "https://awesome-sinoussi-2af10c.netlify.app"   
-    next-docs: 
+          - url: "https://awesome-sinoussi-2af10c.netlify.app"
+    next-docs:
       loadBalancer:
         servers:
-          - url: "https://mealie-nightly-docs.netlify.app"   
+          - url: "https://mealie-nightly-docs.netlify.app"

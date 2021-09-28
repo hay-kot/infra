@@ -31,8 +31,9 @@
           - RECIPE_LANDSCAPE_VIEW=true
           - RECIPE_DISABLE_COMMENTS=false
           - RECIPE_DISABLE_AMOUNT=false
+          - DEFAULT_PASSWORD=demo
           - IS_DEMO=true
-          - BASE_URL=https://mealie-demo.{{ primary_domain }}
+          - BASE_URL=https://demo.{{ mealie_domain }}
           # Gunicorn
           - WEB_CONCURRENCY=2
           - WORKERS_PER_CORE=0.5
@@ -41,7 +42,11 @@
           - ./data/:/app/data
         labels:
           - "traefik.enable=true" # <== Enable traefik to proxy this container
-          - "traefik.http.routers.web.middlewares=redirect@file" # <== This is a middleware to redirect to https
-          - "traefik.http.routers.mealie-web-secured.rule=Host(`mealie-demo.{{ primary_domain }}`)" # <== Your Domain Name for the https rule
+          - "traefik.http.routers.mealie-web-secured.rule=Host(`demo.{{ mealie_domain }}`)" # <== Your Domain Name for the https rule
           - "traefik.http.routers.mealie-web-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
           - "traefik.http.routers.mealie-web-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+          # Redirect From Old URL
+          - "traefik.http.routers.mealie2-web-secured.rule=Host(`mealie-demo.{{ primary_domain }}`)" # <== Your Domain Name for the https rule
+          - "traefik.http.routers.mealie2-web-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+          - "traefik.http.routers.mealie2-web-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+          - "traefik.http.routers.mealie2-web-secured.middlewares=mealie-io-redirect@file"

@@ -26,18 +26,16 @@
         #      - 9091:3000
         environment:
           - GLOBAL_MIDDLEWARE=auth
-          - SUB_PATH=/demo/
           - ALLOW_SIGNUP=true
           - API_URL=http://mealie-api:9000
         labels:
           - "traefik.enable=true" # <== Enable traefik to proxy this container
-          - "traefik.http.routers.web.middlewares=redirect@file" # <== This is a middleware to redirect to https
-          - "traefik.http.routers.mealie-demo-web-secured.rule=(Host(`mealie.{{ primary_domain }}`) && PathPrefix(`/demo{regex:$$|/.*}`))" # <== Your Domain Name for the https rule
-          - "traefik.http.routers.mealie-demo-web-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
-          - "traefik.http.routers.mealie-demo-web-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+          - "traefik.http.routers.mealie-beta-web-secured.rule=Host(`beta.{{ mealie_domain }}`)" # <== Your Domain Name for the https rule
+          - "traefik.http.routers.mealie-beta-web-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+          - "traefik.http.routers.mealie-beta-web-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
 
-      - service_name: mealie-frontend
-        container_name: mealie-frontend
+      - service_name: mealie-api
+        container_name: mealie-api
         active: true
         image: hkotel/mealie:api-nightly
         restart: always
