@@ -58,7 +58,7 @@ services:
 {% if container.ports is defined %}
     ports:
 {% for port in container.ports %}
-      - {{ port }}
+      - "{{ port }}"
 {% endfor %}
 {% endif %}
 {% if ( container.environment is defined ) or ( container.include_global_env_vars is defined and container.include_global_env_vars) %}
