@@ -12,6 +12,11 @@
     group: "{{ main_group }}"
   register: docker_composed
 
+- name: Create Networks
+  docker_network:
+    name: "{{ item.name }}"
+  loop: "{{ networks }}"
+
 - name: Create and/or Start Containers
   when: docker_composed.changed
   community.docker.docker_compose:
