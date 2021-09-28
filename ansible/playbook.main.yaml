@@ -4,16 +4,5 @@
   vars_files:
     - "vars/vault.yaml"
   roles:
-    # - common
-    # - docker
-    # - portainer
-    # - pihole
-    # - pihole_sync
-    # - peer_to_peer_stack
-    # - emby
-    # - bitwarden_rs
-    # - glances_container
-    # # # # - home_assistant - WIP
-    # - documentation
-    - mealie
-    # - caddy
+    - docker_onedev
+    - docker_adguard
