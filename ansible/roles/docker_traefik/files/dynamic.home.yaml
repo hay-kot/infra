@@ -1,0 +1,52 @@
+http:
+  routers:
+    # ROUTER EXAMPLE
+    # router-proxmox:
+    #   entryPoints:
+    #     - websecure
+    #   rule: "Host(`subdomain.{{ domain_me }}`)"
+    #   service: service-proxmox # -> See Service Example for Coupling Example
+    #   tls:
+    #     certResolver: "mytlschallenge"
+
+  services:
+    # SERVICE EXAMPLE
+    # service-proxmox:
+    # loadBalancer:
+    #   servers:
+    #     - url: "https://subdomain.{{ home_domain }}:8006"
+    #       scheme: https
+
+  middlewares:
+    https-redirect:
+      redirectScheme:
+        scheme: https
+    # authelia: TODO: Consider adding authelia??
+    #   forwardAuth:
+    #     address: "http://authelia:9091/api/verify?rd=https://login.m.wd.{{ domain_me }}"
+    default-headers:
+      headers:
+        frameDeny: true
+        sslRedirect: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15552000
+        customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+
+    default-whitelist:
+      ipWhiteList:
+        sourceRange:
+          - "10.0.0.0/24"
+          - "192.168.0.0/16"
+          - "172.0.0.0/8"
+
+    secured:
+      chain:
+        middlewares:
+          - default-whitelist
+          - default-headers

@@ -1,6 +1,5 @@
 http:
   routers:
-    # Define a connection between requests and services
     to-portfolio:
       rule: "Host(`hay-kot.dev`)"
       service: portfolio

@@ -1,12 +1,12 @@
 ---
-- name: Ensure Gotify Directories Exist
+- name: Ensure Adguard Directories Exist
   file:
     path: "{{ adguard_docker_directory }}"
     state: directory
     owner: "{{ main_username }}"
     group: "{{ main_username }}"
 
-- name: Generate Gotify Stack
+- name: Generate Adguard Stack
   include_role:
     name: _docker_compose_generator
   vars:
@@ -25,13 +25,13 @@
           - 53:53/udp
           - 784:784/udp
           - 853:853/tcp
-          - 3788:3000/tcp
+          - "{{ adguard_portal_port }}:3000/tcp"
         volumes:
           - "{{ adguard_docker_directory }}/workdir:/opt/adguardhome/work"
           - "{{ adguard_docker_directory }}/confdir:/opt/adguardhome/conf"
         restart: unless-stopped
 
-- name: Create and Start Gotify
+- name: Create and Start Adguard
   community.docker.docker_compose:
     restarted: true
     project_src: "{{ adguard_docker_directory }}"

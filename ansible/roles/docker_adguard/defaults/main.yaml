@@ -1,1 +1,3 @@
+---
 adguard_docker_directory: "{{docker_dir}}/adguard"
+adguard_portal_port: "3788"

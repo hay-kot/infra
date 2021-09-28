@@ -1,9 +1,0 @@
-- name: Local Host Testing
-  hosts: localhost
-  user: "{{ main_username }}"
-  vars_files:
-    - "vars/vault.yaml"
-    - "vars/globals.yaml"
-  roles:
-    - traefik
-
